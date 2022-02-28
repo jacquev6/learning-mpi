@@ -5,6 +5,8 @@ Resources
 =========
 
 - The [Wikipedia article about MPI](https://en.wikipedia.org/wiki/Message_Passing_Interface)
+- [OpenMPI 4.1 documentation](https://www.open-mpi.org/doc/v4.1/)
+- [Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy)
 
 Examples
 ========
@@ -16,7 +18,9 @@ Hello World (from the Wikipedia article)
 
 I'm using the [ubuntu:20.04](https://hub.docker.com/_/ubuntu) Docker image as a base
 
-Package [libopenmpi-dev](https://www.open-mpi.org/) comes with a compiler wrapper for `gcc` named [`mpicc`](https://www.open-mpi.org/doc/current/man1/mpicc.1.php) (and similar wrappers for `g++`, `gfortran`, etc.), and a wrapper to execute the program, named [`mpirun`](https://www.open-mpi.org/doc/current/man1/mpirun.1.php). Their use is visible in `wikipedia-hello-world/run.sh`.
+Package [libopenmpi-dev](https://www.open-mpi.org/) comes with a compiler wrapper for `gcc` named [`mpicc`](https://www.open-mpi.org/doc/4.1/man1/mpicc.1.php) (and similar wrappers for `g++`, `gfortran`, etc.), and a wrapper to execute the program, named [`mpirun`](https://www.open-mpi.org/doc/4.1/man1/mpirun.1.php). Their use is visible in `wikipedia-hello-world/run.sh`.
+
+Being familiar with [Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy) seems useful to understand the man page of `mpirun`.
 
 These wrappers are installed using `update-alternatives`, so they can't be found using [Ubuntu's packages website](https://packages.ubuntu.com/)'s "Search the contents of packages" functionality.
 Finding their actual location is quite the treasure hunt:
