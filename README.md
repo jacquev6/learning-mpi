@@ -8,6 +8,13 @@ Resources
 - [OpenMPI 4.1 documentation](https://www.open-mpi.org/doc/v4.1/)
 - [Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy)
 
+Acronyms
+========
+
+- MPI: Message Passing Interface (generic term for the specification and the many implementations)
+- ORTE: Open Run Time Environment: the runtime part of OpenMPI
+- OPAL: Open Portable Access Layer: utility and glue in OpenMPI
+
 Examples
 ========
 
