@@ -16,5 +16,5 @@ docker run \
     mkdir -p build
     mpicc hello.c -o build/hello
 
-    mpirun -v -n 4 build/hello
+    mpiexec -v -n 4 build/hello
 """

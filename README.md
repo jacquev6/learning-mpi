@@ -25,9 +25,11 @@ Hello World (from the Wikipedia article)
 
 I'm using the [ubuntu:20.04](https://hub.docker.com/_/ubuntu) Docker image as a base
 
-Package [libopenmpi-dev](https://www.open-mpi.org/) comes with a compiler wrapper for `gcc` named [`mpicc`](https://www.open-mpi.org/doc/4.1/man1/mpicc.1.php) (and similar wrappers for `g++`, `gfortran`, etc.), and a wrapper to execute the program, named [`mpirun`](https://www.open-mpi.org/doc/4.1/man1/mpirun.1.php). Their use is visible in `wikipedia-hello-world/run.sh`.
+Package [libopenmpi-dev](https://www.open-mpi.org/) comes with a compiler wrapper for `gcc` named [`mpicc`](https://www.open-mpi.org/doc/v4.1/man1/mpicc.1.php) (and similar wrappers for `g++`, `gfortran`, etc.), and a wrapper to execute the program, named [`mpiexec`](https://www.open-mpi.org/doc/v4.1/man1/mpiexec.1.php). Their use is visible in `wikipedia-hello-world/run.sh`.
 
-Being familiar with [Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy) seems useful to understand the man page of `mpirun`.
+`mpirun` is an alias for `mpiexec`, but `mpiexec` is "recommended by the MPI standard".
+
+Being familiar with [Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy) seems useful to understand the man page of `mpiexec`.
 
 These wrappers are installed using `update-alternatives`, so they can't be found using [Ubuntu's packages website](https://packages.ubuntu.com/)'s "Search the contents of packages" functionality.
 Finding their actual location is quite the treasure hunt:
@@ -50,7 +52,7 @@ And `opal_wrapper` comes from package [openmpi-bin](https://packages.ubuntu.com/
 Looking at the code:
 
 - Everything is wrapped between `MPI_Init` and `MPI_Finalize`
-- Each process gets a "rank", using `MPI_Comm_rank`, and knows how many processes there are in total, using `MPI_Comm_size`. This requires that `mpirun` does all bookkeeping to let these processes, and only them, communicate.
+- Each process gets a "rank", using `MPI_Comm_rank`, and knows how many processes there are in total, using `MPI_Comm_size`. This requires that `mpiexec` does all bookkeeping to let these processes, and only them, communicate.
 - Each process then chooses its role based on its rank, à la `fork`.
 - `MPI_Send` is used to send a message to another process, identified by its rank.
 - `MPI_Recv` is used to receive a message from another process, also identified by its rank.
