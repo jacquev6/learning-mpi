@@ -6,7 +6,8 @@ Resources
 
 - The [Wikipedia article about MPI](https://en.wikipedia.org/wiki/Message_Passing_Interface)
 - [OpenMPI 4.1 documentation](https://www.open-mpi.org/doc/v4.1/)
-- [Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy)
+- The [Wikipedia article about Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy)
+- This [MPI tutorial](https://mpitutorial.com), quite complete, easy to read
 
 Acronyms
 ========
@@ -18,12 +19,14 @@ Acronyms
 Examples
 ========
 
+Each example can be built and run using its `run.sh` script.
+
+I'm using the [ubuntu:20.04](https://hub.docker.com/_/ubuntu) Docker image as a base
+
 Hello World (from the Wikipedia article)
 ----------------------------------------
 
 [Source code](wikipedia-hello-world).
-
-I'm using the [ubuntu:20.04](https://hub.docker.com/_/ubuntu) Docker image as a base
 
 Package [libopenmpi-dev](https://www.open-mpi.org/) comes with a compiler wrapper for `gcc` named [`mpicc`](https://www.open-mpi.org/doc/v4.1/man1/mpicc.1.php) (and similar wrappers for `g++`, `gfortran`, etc.), and a wrapper to execute the program, named [`mpiexec`](https://www.open-mpi.org/doc/v4.1/man1/mpiexec.1.php). Their use is visible in `wikipedia-hello-world/run.sh`.
 
@@ -66,3 +69,24 @@ Looking at the code:
 @todo What happens when a process calls `MPI_Send` while no other process is calling `MPI_Recv`?
 
 @todo How does one run this example on several machines?
+
+@todo What happens to rank and and size when a process crashes?
+
+Ring
+----
+
+[Source code](ring).
+
+The goal of this example is for me to write something not completely trivial using the most basic API.
+
+MPI is *very* flexible: it only provides a way to send individual messages from a process to an other.
+No request-response, no dataflow (like UDP, not like TCP), no RPC, nothing that gives structure to the exchange.
+It's low-level, and thus both very simple and sometimes too generic and flexible.
+
+Termination conditions for this example are a bit subtle: process 0 must stop after it *receives* the last message from the last process, but all other processes must stop after *sending* the last message.
+This ring feels like a pattern that could be abstracted in a library, with others.
+
+@todo Search for "MPI patterns"
+
+Programs that use the `MPI_Send`/`MPI_Recv` API **have** to use their rank to specialize their behavior.
+True per-to-peer behavior is not possible using these API.
