@@ -68,9 +68,9 @@ Looking at the code:
 
 @todo What happens when a process calls `MPI_Send` while no other process is calling `MPI_Recv`?
 
-@todo How does one run this example on several machines?
+How does one run this example on several machines? See example "Coordination" below.
 
-@todo What happens to rank and and size when a process crashes?
+What happens to rank and and size when a process crashes? By default, `mpiexec` just stops everything.
 
 Ring
 ----
