@@ -108,3 +108,10 @@ This method requires `ssh` access between the containers.
 This is unusual to say the least.
 
 @todo Investigate other methods, especially methods using SLURM or Kubernetes.
+
+No wrappers
+-----------
+
+[Source code](no-wrappers).
+
+Goal: build and execute an MPI program without using MPI wrappers `mpicc` and `mpiexec`.
