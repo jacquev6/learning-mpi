@@ -14,7 +14,12 @@ docker run \
     set -o errexit
 
     mkdir -p build
-    gcc hello.c $(pkg-config --cflags --libs mpi-c) -o build/hello
 
-    mpiexec -v -n 4 build/hello
+    gcc hello.c $(pkg-config --cflags --libs mpi) -o build/hello-c
+    mpiexec -v -n 4 build/hello-c
+
+    echo
+
+    g++ -std=c++17 hello.cpp $(pkg-config --cflags --libs mpi-cxx) -o build/hello-cpp
+    mpiexec -v -n 4 build/hello-cpp
 """

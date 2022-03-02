@@ -1,13 +1,25 @@
-#include <stdio.h>
+#include <iostream>
 
 #include <mpi.h>
 
 
-int main(int argc, char **argv) {
+int main(int argc, char* argv[], char* env[]) {
     MPI_Init(&argc, &argv);
 
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    std::cout << rank << ": " << "argc=" << argc << ", argv=\"";
+    for (int i = 0; i != argc; ++i) {
+        if (i) std::cout << "\" \"";
+        std::cout << argv[i];
+    }
+    std::cout << "\"" << std::endl;
+
+    while (*env) {
+        std::cout << rank << ": " << *env << std::endl;
+        ++env;
+    }
 
     int size;
     MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -19,7 +31,7 @@ int main(int argc, char **argv) {
     } else {
         char buf[16];
         MPI_Recv(buf, sizeof(buf), MPI_CHAR, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        printf("%i: %s\n", rank, buf);
+        std::cout << rank << ": " << buf << std::endl;
     }
 
     MPI_Finalize();

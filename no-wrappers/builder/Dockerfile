@@ -4,6 +4,6 @@ FROM ubuntu:20.04
 RUN set -x \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
-      gcc pkg-config `# Build tools` \
+      g++ pkg-config `# Build tools` \
       libc6-dev libopenmpi-dev `# Direct dependencies` \
  && apt-get clean

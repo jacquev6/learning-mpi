@@ -13,8 +13,11 @@ Acronyms
 ========
 
 - MPI: Message Passing Interface (generic term for the specification and the many implementations)
-- ORTE: Open Run Time Environment: the runtime part of OpenMPI
+- OMPI: [Open MPI](https://www.open-mpi.org/), an implementation of MPI
 - OPAL: Open Portable Access Layer: utility and glue in OpenMPI
+- ORTE: Open Run Time Environment: the runtime part of OpenMPI
+- PMIx: [Process Management Interface](https://pmix.github.io/)
+- OPMI: [Open PMIx](https://openpmix.github.io/), an implementation of PMIx
 
 Examples
 ========
@@ -48,9 +51,9 @@ Finding their actual location is quite the treasure hunt:
 
 And `opal_wrapper` comes from package [openmpi-bin](https://packages.ubuntu.com/search?searchon=contents&keywords=opal_wrapper&mode=exactfilename&suite=impish&arch=any).
 
-@todo Try and compile using plain `gcc`, to understand what the wrapper does
+Try and compile using plain `gcc`, to understand what the wrapper does: see example "No wrappers" below.
 
-@todo Try and run without the wrapper, to understand what it does
+Try and run without the wrapper, to understand what it does: see example "No wrappers" below.
 
 Looking at the code:
 
@@ -115,3 +118,12 @@ No wrappers
 [Source code](no-wrappers).
 
 Goal: build and execute an MPI program without using MPI wrappers `mpicc` and `mpiexec`.
+
+Building without `mpicc` or `mpic++` is quite easy, using `gcc` of `g++` with the usual `pkg-config`.
+Building with `nvcc` should be easy as well.
+
+Running without `mpiexec` on the other hand, is not going to be trivial.
+The program `hello.cpp` in this example displays the command line and the environment variables that are set by `mpiexec`.
+In that case, all command lines are the same.
+But the environment variables are more complex: about 50 variables, most of them prefixed with `OMPI_` or `PMIX_` are added.
+There is little hope in running MPI programs without `mpiexec`.
