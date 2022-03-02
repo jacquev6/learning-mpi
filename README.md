@@ -90,3 +90,14 @@ This ring feels like a pattern that could be abstracted in a library, with other
 
 Programs that use the `MPI_Send`/`MPI_Recv` API **have** to use their rank to specialize their behavior.
 True per-to-peer behavior is not possible using these API.
+
+Coordination
+------------
+
+[Source code](coordination).
+
+Goals:
+
+- write another example myself
+- try and encapsulate the communication API in a more functional style
+- demonstrate how the same binary can be run on several machines and interact with each other (simulated using `docker-compose`)
