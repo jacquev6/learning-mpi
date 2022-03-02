@@ -1,0 +1,15 @@
+version: "3.3"
+services:
+  worker-1:
+    build: .
+  worker-2:
+    build: .
+  worker-3:
+    build: .
+  coordinator:
+    depends_on:
+      - worker-1
+      - worker-2
+      - worker-3
+    build: .
+    command: mpiexec --allow-run-as-root --host coordinator,worker-1,worker-2,worker-3 coordination

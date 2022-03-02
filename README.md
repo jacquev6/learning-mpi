@@ -101,3 +101,10 @@ Goals:
 - write another example myself
 - try and encapsulate the communication API in a more functional style
 - demonstrate how the same binary can be run on several machines and interact with each other (simulated using `docker-compose`)
+
+When running this example, you can see '*e.g.* using `htop` that `coordination` processes run each in a separate Docker container.
+
+This method requires `ssh` access between the containers.
+This is unusual to say the least.
+
+@todo Investigate other methods, especially methods using SLURM or Kubernetes.

@@ -1,9 +1,12 @@
 #include <cassert>
 #include <algorithm>
 #include <iostream>
+#include <thread>
 
 #include <mpi.h>
 
+
+using namespace std::chrono_literals;
 
 const int coordinator_rank = 0;
 
@@ -20,6 +23,7 @@ void send_string_to(const std::string& message, int rank) {
 void coordinator(const int size) {
   for (int rank = 1; rank != size; ++rank) {
     assert(receive_string_from(rank) == "ready");
+    std::cout << "Worker " << rank << " ready" << std::endl;
   }
   for (int i = 0; i != 10; ++i) {
     for (int rank = 1; rank != size; ++rank) {
@@ -42,6 +46,7 @@ void worker() {
     if (message == "done") {
       break;
     } else {
+      std::this_thread::sleep_for(1s);
       std::reverse(message.begin(), message.end());
       send_string_to(message, coordinator_rank);
     }
