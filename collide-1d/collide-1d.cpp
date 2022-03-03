@@ -18,6 +18,14 @@ static int rank;  // Global for convenient debug logging
 
 
 struct Disc {
+  Disc() :
+    _id(-1),
+    _mass(0),
+    _radius(0),
+    _position(0),
+    _velocity(0)
+  {}
+
   Disc(const int id, const float mass, const float radius, const float position, const float velocity) :
     _id(id),
     _mass(mass),
@@ -40,8 +48,16 @@ struct Disc {
     return is_still;
   }
 
+  int id() const {
+    return _id;
+  }
+
   float center() const {
     return _position;
+  }
+
+  float velocity() const {
+    return _velocity;
   }
 
   float left() const {
@@ -71,14 +87,37 @@ struct Segment {
     _right_position(right_position),
     _discs(discs)
   {
-    std::cout << rank << ": initialized segment [" << _left_position << ", " << _right_position << "] with " << _discs.size() << " _discs" << std::endl;
+    // std::cout << rank << ": initialized segment [" << _left_position << ", " << _right_position << "] with " << _discs.size() << " _discs" << std::endl;
   }
 
-  void advance(const float delta) {
-    std::cout << rank << ": advancing segment" << std::endl;
+  void add_disc(const Disc& disc) {
+    // std::cout << rank << ": disc " << disc.id() << " incoming, at position " << disc.center() << ", with velocity " << disc.velocity() << std::endl;
+    _discs.push_back(disc);
+  }
+
+  std::tuple<std::vector<Disc>, std::vector<Disc>> advance(const float delta) {
+    // std::cout << rank << ": advancing segment" << std::endl;
+
+    std::vector<Disc> discs_to_the_left;
+    std::vector<Disc> discs_to_the_right;
+
     for (Disc& disc : _discs) {
+      const bool already_to_the_left = disc.left() < _left_position;
+      const bool already_to_the_right = disc.right() > _right_position;
+
       disc.advance(delta);
+
+      if (!already_to_the_left && disc.left() < _left_position) {
+        // std::cout << rank << ": disc " << disc.id() << " is leaving to the left, at position " << disc.center() << ", with velocity " << disc.velocity() << std::endl;
+        discs_to_the_left.push_back(disc);
+      }
+      if (!already_to_the_right && disc.right() > _right_position) {
+        // std::cout << rank << ": disc " << disc.id() << " is leaving to the right, at position " << disc.center() << ", with velocity " << disc.velocity() << std::endl;
+        discs_to_the_right.push_back(disc);
+      }
     }
+
+    return std::make_tuple(discs_to_the_left, discs_to_the_right);
   }
 
   bool is_still() {
@@ -88,7 +127,7 @@ struct Segment {
   }
 
   void draw(const std::string& file_name) {
-    std::cout << rank << ": drawing segment to " << file_name << std::endl;
+    // std::cout << rank << ": drawing segment to " << file_name << std::endl;
 
     auto surface = Cairo::ImageSurface::create(Cairo::Format::FORMAT_ARGB32, (_right_position - _left_position) * 10, 60);
     auto cr = Cairo::Context::create(surface);
@@ -165,7 +204,42 @@ int main(int argc, char* argv[]) {
   for (int frame_index = 1; frame_index != frames_count; ++frame_index) {
     for (int instant_index = 0; instant_index != 40; ++instant_index) {
       // Advance time by 1ms, 40 times per frame == 40ms / frame == 25 fps
-      segment.advance(1e-3);
+      auto [discs_to_the_left, discs_to_the_right] = segment.advance(1e-3);
+
+      if (rank != size - 1) {
+        if (!discs_to_the_right.empty()) {
+          std::cout << rank << ": sending " << discs_to_the_right.size() << " discs to the right" << std::endl;
+        }
+        // One could be tempted to put the `MPI_Send` inside the `if` just above to limit communications,
+        // but then the `MPI_Probe` below would block, so we'd need to use `MPI_Iprobe`,
+        // but then a message could be received on a different `instant_index` than it was sent,
+        // which would need to be fixed, e.g. using a `MPI_Barrier`, resulting in...
+        // the same amount of communications!
+        // So, better keep things simple and send empty messages to keep processes synchronized.
+        MPI_Send(
+          discs_to_the_right.data(), discs_to_the_right.size() * sizeof(Disc), MPI_BYTE,
+          rank + 1, 0, MPI_COMM_WORLD
+        );
+      }
+
+      if (rank != 0) {
+        MPI_Status status;
+        MPI_Probe(rank - 1, 0, MPI_COMM_WORLD, &status);
+        int bytes_count;
+        MPI_Get_count(&status, MPI_BYTE, &bytes_count);
+        assert(bytes_count % sizeof(Disc) == 0);
+        std::vector<Disc> discs_from_the_left(bytes_count / sizeof(Disc));
+        if (!discs_from_the_left.empty()) {
+          std::cout << rank << ": receiving " << discs_from_the_left.size() << " discs from the left" << std::endl;
+        }
+        MPI_Recv(
+          discs_from_the_left.data(), bytes_count, MPI_BYTE,
+          rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE
+        );
+        for (auto& disc : discs_from_the_left) {
+          segment.add_disc(disc);
+        }
+      }
     }
     segment.draw(make_filename(output_directory, rank, frame_index));
   }

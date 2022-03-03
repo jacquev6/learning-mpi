@@ -29,6 +29,6 @@ docker run \
       echo gm convert build/*-\$index.png +append build/\$index.png;
     done | parallel -j20
 
-    ffmpeg -i build/%08d.png -c:v libx264 -vf fps=25 -pix_fmt yuv420p build/out-tmp.mp4
+    ffmpeg -i build/%08d.png -c:v libx264 -vf fps=25 -pix_fmt yuv420p build/out-tmp.mp4 >/dev/null 2>&1
     mv build/out-tmp.mp4 build/out.mp4
 """
