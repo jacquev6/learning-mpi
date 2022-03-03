@@ -38,7 +38,7 @@ struct Disc {
 
   void advance(const float delta) {
     _position += delta * _velocity;  // Integrate _velocity
-    _velocity *= 0.9995;  // Decelerate because of friction
+    _velocity *= 0.9999;  // Decelerate because of friction
     // std::cout << rank << ": advanced disc " << _id << " to position " << _position << ", with velocity " << _velocity << std::endl;
   }
 
@@ -58,6 +58,10 @@ struct Disc {
 
   float velocity() const {
     return _velocity;
+  }
+
+  void velocity(const float velocity) {
+    _velocity = velocity;
   }
 
   float left() const {
@@ -82,9 +86,17 @@ struct Disc {
 
 
 struct Segment {
-  Segment(const float left_position, const float right_position, const std::vector<Disc>& discs) :
+  Segment(
+    const bool open_left,
+    const float left_position,
+    const float right_position,
+    const bool open_right,
+    const std::vector<Disc>& discs
+  ) :
+    _open_left(open_left),
     _left_position(left_position),
     _right_position(right_position),
+    _open_right(open_right),
     _discs(discs)
   {
     // std::cout << rank << ": initialized segment [" << _left_position << ", " << _right_position << "] with " << _discs.size() << " _discs" << std::endl;
@@ -107,13 +119,25 @@ struct Segment {
 
       disc.advance(delta);
 
-      if (!already_to_the_left && disc.left() < _left_position) {
-        // std::cout << rank << ": disc " << disc.id() << " is leaving to the left, at position " << disc.center() << ", with velocity " << disc.velocity() << std::endl;
-        discs_to_the_left.push_back(disc);
+      if (disc.left() < _left_position) {
+        if (_open_left) {
+          if (!already_to_the_left) {
+            // std::cout << rank << ": disc " << disc.id() << " is leaving to the left, at position " << disc.center() << ", with velocity " << disc.velocity() << std::endl;
+            discs_to_the_left.push_back(disc);
+          }
+        } else {
+          disc.velocity(-disc.velocity());
+        }
       }
-      if (!already_to_the_right && disc.right() > _right_position) {
-        // std::cout << rank << ": disc " << disc.id() << " is leaving to the right, at position " << disc.center() << ", with velocity " << disc.velocity() << std::endl;
-        discs_to_the_right.push_back(disc);
+      if (disc.right() > _right_position) {
+        if (_open_right) {
+          if (!already_to_the_right) {
+            // std::cout << rank << ": disc " << disc.id() << " is leaving to the right, at position " << disc.center() << ", with velocity " << disc.velocity() << std::endl;
+            discs_to_the_right.push_back(disc);
+          }
+        } else {
+          disc.velocity(-disc.velocity());
+        }
       }
     }
 
@@ -161,8 +185,10 @@ struct Segment {
   }
 
  private:
+  const bool _open_left;
   const float _left_position;
   const float _right_position;
+  const bool _open_right;
   std::vector<Disc> _discs;
 };
 
@@ -198,7 +224,7 @@ int main(int argc, char* argv[]) {
   int size;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  Segment segment(rank * 10, (rank + 1) * 10, { Disc(rank, 1, 1 + rank / 3.f, rank * 10.f + 3, 7 + rank) });
+  Segment segment(rank != 0, rank * 10, (rank + 1) * 10, rank != size - 1, { Disc(rank, 1, 1 + rank / 3.f, rank * 10.f + 3, 7 + rank) });
   segment.draw(make_filename(output_directory, rank, 0));
 
   for (int frame_index = 1; frame_index != frames_count; ++frame_index) {

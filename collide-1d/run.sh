@@ -20,7 +20,7 @@ docker run \
     g++ \$build_options collide-1d.cpp \$(pkg-config --cflags --libs cairomm-png-1.0 mpi-cxx) -o build/collide-1d
 
     rm -f build/out-tmp.mp4 build/*.png
-    mpiexec -v -n 4 build/collide-1d build 3
+    mpiexec -v -n 4 build/collide-1d build 10
 
     echo 'Post-processing'
 
