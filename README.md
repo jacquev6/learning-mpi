@@ -8,7 +8,7 @@ Resources
 - [OpenMPI 4.1 documentation](https://www.open-mpi.org/doc/v4.1/)
 - The [Wikipedia article about Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy)
 - This [MPI tutorial](https://mpitutorial.com), quite complete, easy to read
-- This [presentation about MPI patterns](https://cs.gmu.edu/~kauffman/cs499/comm-patterns.pdf) (page 7+)
+- This [presentation about MPI patterns](https://cs.gmu.edu/~kauffman/cs499/comm-patterns.pdf) (page 7+). **fundamental reading**
 
 Acronyms
 ========
@@ -139,4 +139,6 @@ Goals:
 - use dynamic point-to-point communications (`MPI_Probe`, `MPI_Get_count`)
 - investigate how to test an MPI application
 
-This example (tries to) implement an event-based simulation of discs moving (without friction) on a rail, and colliding (elastically) in each other.
+This example (tries to) implement a fixed-time-increment simulation of discs moving on a rail, and colliding with each other.
+
+It started out as a discrete-event simulation, but distributing this kind of simulation is a research domain on its own, so not well suited for a quick example focused on learning MPI!
