@@ -6,7 +6,8 @@ RUN set -x \
  && DEBIAN_FRONTEND=noninteractive apt-get install --yes --no-install-recommends \
       wget ca-certificates `Common tools` \
       g++ pkg-config make cmake `# Build tools` \
-      libopenmpi-dev `# Direct dependencies` \
+      libopenmpi-dev libcairomm-1.0-dev `# Direct dependencies` \
+      graphicsmagick ffmpeg parallel `# Post-processing` \
  && apt-get clean
 
 # Google Test
