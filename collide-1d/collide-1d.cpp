@@ -141,6 +141,8 @@ struct Segment {
       }
     }
 
+    // @todo (Unrelated to MPI) Detect and simulate collisions between discs
+
     return std::make_tuple(discs_to_the_left, discs_to_the_right);
   }
 
