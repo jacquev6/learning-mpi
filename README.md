@@ -68,9 +68,9 @@ Looking at the code:
 
 @todo Can binaries built from different source code communicate? (*e.g.* a coordinator and several workers)
 
-@todo Investigate non-blocking "send" and "receive" functions.
+Non-blocking "send" and "receive" functions: `MPI_Iprobe` *et al.*
 
-@todo What happens when a process calls `MPI_Send` while no other process is calling `MPI_Recv`?
+What happens when a process calls `MPI_Send` while no other process is calling `MPI_Recv`? Everything enters an active wait loop, making no progress and using 100% CPU.
 
 How does one run this example on several machines? See example "Coordination" below.
 
@@ -90,7 +90,7 @@ It's low-level, and thus both very simple and sometimes too generic and flexible
 Termination conditions for this example are a bit subtle: process 0 must stop after it *receives* the last message from the last process, but all other processes must stop after *sending* the last message.
 This ring feels like a pattern that could be abstracted in a library, with others.
 
-@todo Search for "MPI patterns"
+MPI patterns: see "Resources" above.
 
 Programs that use the `MPI_Send`/`MPI_Recv` API **have** to use their rank to specialize their behavior.
 True per-to-peer behavior is not possible using these API.
@@ -132,13 +132,14 @@ There is little hope in running MPI programs without `mpiexec`.
 Collide 1D
 ----------
 
-[Source code (barely started)](collide-1d)
+[Source code](collide-1d)
 
 Goals:
 - write something myself
 - use dynamic point-to-point communications (`MPI_Probe`, `MPI_Get_count`)
-- investigate how to test an MPI application
+- investigate how to test an MPI application (@todo)
+- use `MPI_Allreduce`, a more advanced MPI API (not an initial goal, but the best solution for an actual requirement of this example)
 
-This example (tries to) implement a fixed-time-increment simulation of discs moving on a rail, and colliding with each other.
+This example (tries to) implement a fixed-time-increment simulation of discs moving on a rail.
 
 It started out as a discrete-event simulation, but distributing this kind of simulation is a research domain on its own, so not well suited for a quick example focused on learning MPI!
