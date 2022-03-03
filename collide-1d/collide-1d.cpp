@@ -266,6 +266,35 @@ int main(int argc, char* argv[]) {
           segment.add_disc(disc);
         }
       }
+
+      if (rank != 0) {
+        if (!discs_to_the_left.empty()) {
+          std::cout << rank << ": sending " << discs_to_the_left.size() << " discs to the left" << std::endl;
+        }
+        MPI_Send(
+          discs_to_the_left.data(), discs_to_the_left.size() * sizeof(Disc), MPI_BYTE,
+          rank - 1, 0, MPI_COMM_WORLD
+        );
+      }
+
+      if (rank != size - 1) {
+        MPI_Status status;
+        MPI_Probe(rank + 1, 0, MPI_COMM_WORLD, &status);
+        int bytes_count;
+        MPI_Get_count(&status, MPI_BYTE, &bytes_count);
+        assert(bytes_count % sizeof(Disc) == 0);
+        std::vector<Disc> discs_from_the_right(bytes_count / sizeof(Disc));
+        if (!discs_from_the_right.empty()) {
+          std::cout << rank << ": receiving " << discs_from_the_right.size() << " discs from the right" << std::endl;
+        }
+        MPI_Recv(
+          discs_from_the_right.data(), bytes_count, MPI_BYTE,
+          rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE
+        );
+        for (auto& disc : discs_from_the_right) {
+          segment.add_disc(disc);
+        }
+      }
     }
     segment.draw(make_filename(output_directory, rank, frame_index));
   }
