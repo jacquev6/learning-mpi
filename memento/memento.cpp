@@ -69,6 +69,33 @@ int main(int argc, char* argv[]) {
   }
 
 
+  // One-to-one, non-blocking
+  if (rank == 0) {
+    int data = 0xEEFF0011;
+
+    MPI_Request request;
+    MPI_Isend(&data, 1, MPI_INT, 1, 61, MPI_COMM_WORLD, &request);
+
+    int flag;
+    for (int i = 0; i != 5; ++i) {
+      // Do something else in the meantime
+
+      MPI_Test(&request, &flag, MPI_STATUS_IGNORE);
+      if (flag) break;
+    }
+
+    if (!flag) {
+      MPI_Wait(&request, MPI_STATUS_IGNORE);
+    }
+  } else if (rank == 1) {
+    int data;
+
+    MPI_Recv(&data, 1, MPI_INT, 0, 61, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+    assert(data == 0xEEFF0011);
+  }
+
+
   // One-to-one, dynamic size
   if (rank == 0) {
     std::vector<int> data;

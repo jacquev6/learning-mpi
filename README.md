@@ -53,6 +53,8 @@ Communication API
 
 These API, and a bit more, are demonstrated in the [memento](memento) example.
 
+### Main
+
 Legend:
 - ⬛: uninitialized data
 - 🟪🟦🟩🟨🟧🟥🐶🐱🐷♠️♥️♦️: initialized data
@@ -73,9 +75,18 @@ Legend:
 | All-to-all,<br>partial reductions,<br>inclusive | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Scan(•)`<br>`Scan(•)`<br>`Scan(•)` | 🟩, 🟩<br>🟪, 🟦 (=🟩•🟪)<br>🟧, 🟥 (=🟩•🟪•🟧) |
 | All-to-all,<br>partial reductions,<br>exclusive | 0<br>1<br>2<br>3 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛<br>🟨, ⬛ | `Exscan(•)`<br>`Exscan(•)`<br>`Exscan(•)`<br>`Exscan(•)` | 🟩, ⬛<br>🟪, 🟩<br>🟧, 🟦 (=🟩•🟪)<br>🟨, 🟥 (=🟩•🟪•🟧) |
 
-@todo Add prefix variants: `I` (non-blocking), `B` (buffered), `M` (matched), `neighbor`
+### Variants
+
+@todo Add prefix variants: `B` (buffered), `M` (matched), `neighbor`
 
 @todo Add suffix variants: `v`, `w`
+
+#### Non-blocking
+
+Most API have a variant prefixed with `I` (*e.g.* `MPI_Isend`) that doesn't block.
+These variants populate an `MPI_Request` object.
+`MPI_Test` can be used to poll that object for completion,
+and `MPI_Wait` can be used to wait (block) until it's complete.
 
 Examples
 ========
