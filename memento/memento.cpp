@@ -288,7 +288,7 @@ int main(int argc, char* argv[]) {
   }
 
 
-  // All-to-all, partial reductions
+  // All-to-all, partial reductions, inclusive
   {
     int data_to_send = 100 * rank;
     int data_to_receive = 42;
@@ -296,6 +296,19 @@ int main(int argc, char* argv[]) {
     MPI_Scan(&data_to_send, &data_to_receive, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 
     assert(data_to_receive == 100 * rank * (rank + 1) / 2);
+  }
+
+
+  // All-to-all, partial reductions, exclusive
+  {
+    int data_to_send = 100 * rank;
+    int data_to_receive = 42;
+
+    MPI_Exscan(&data_to_send, &data_to_receive, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
+    if (rank != 0) {
+      assert(data_to_receive == 100 * rank * (rank - 1) / 2);
+    }
   }
 
 

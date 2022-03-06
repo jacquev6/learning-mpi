@@ -63,11 +63,12 @@ Legend:
 | All-to-one | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪<br>🟧 | `Gather(0)`<br>`Gather(0)`<br>`Gather(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
 | All-to-all,<br>same data | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪, ⬛⬛⬛<br>🟧, ⬛⬛⬛ | `Allgather(0)`<br>`Allgather(0)`<br>`Allgather(0)` | 🟩, 🟩🟪🟧<br>🟪, 🟩🟪🟧<br>🟧, 🟩🟪🟧 |
 | All-to-all,<br>different data<br>(transposition) | 0<br>1<br>2 | 🟪🟦🟩, ⬛⬛⬛<br>🐶🐱🐷, ⬛⬛⬛<br>♠️♥️♦️, ⬛⬛⬛ | `MPI_Alltoall`<br>`MPI_Alltoall`<br>`MPI_Alltoall` | 🟪🟦🟩, 🟪🐶♠️<br>🐶🐱🐷, 🟦🐱♥️<br>♠️♥️♦️, 🟩🐷♦️ |
-| All-to-one,<br>reduction<br>(🟥 = 🟩+🟪+🟧) | 0<br>1<br>2 | 🟩, ⬛<br>🟪<br>🟧 | `Reduce(0)`<br>`Reduce(0)`<br>`Reduce(0)` | 🟩, 🟥<br>🟪<br>🟧 |
-| All-to-all,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Allreduce()`<br>`Allreduce()`<br>`Allreduce()` | 🟩, 🟥<br>🟪, 🟥<br>🟧, 🟥 |
-| All-to-all,<br>partial reductions<br>(🟦 = 🟩+🟪) | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Scan()`<br>`Scan()`<br>`Scan()` | 🟩, 🟩<br>🟪, 🟦<br>🟧, 🟥 |
+| All-to-one,<br>reduction<br>(🟥 = 🟩•🟪•🟧) | 0<br>1<br>2 | 🟩, ⬛<br>🟪<br>🟧 | `Reduce(0)`<br>`Reduce(0)`<br>`Reduce(0)` | 🟩, 🟥<br>🟪<br>🟧 |
+| All-to-all,<br>reduction<br>(🟥 = 🟩•🟪•🟧) | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Allreduce()`<br>`Allreduce()`<br>`Allreduce()` | 🟩, 🟥<br>🟪, 🟥<br>🟧, 🟥 |
+| All-to-all,<br>partial reductions,<br>inclusive<br>(🟦 = 🟩•🟪)<br>(🟥 = 🟩•🟪•🟧) | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Scan()`<br>`Scan()`<br>`Scan()` | 🟩, 🟩<br>🟪, 🟦<br>🟧, 🟥 |
+| All-to-all,<br>partial reductions,<br>exclusive<br>(🟦 = 🟩•🟪)<br>(🟥 = 🟩•🟪•🟧) | 0<br>1<br>2<br>3 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛<br>🟨, ⬛ | `Exscan()`<br>`Exscan()`<br>`Exscan()`<br>`Exscan()` | 🟩, ⬛<br>🟪, 🟩<br>🟧, 🟦<br>🟨, 🟥 |
 
-@todo Add `Accumulate`, `Exscan`, `Reduce_scatter`, `Fetch_and_op`
+@todo Add `Accumulate`, `Reduce_scatter`, `Fetch_and_op`
 
 @todo Add prefix variants: `I` (non-blocking), `B` (buffered), `M` (matched), `neighbor`
 
