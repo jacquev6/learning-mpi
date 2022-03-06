@@ -27,19 +27,19 @@ Acronyms
 Concepts
 --------
 
-## Processor
+### Processor
 
 A [process](https://en.wikipedia.org/wiki/Process_(computing)) using the MPI infrastructure.
 
-## Communicator
+### Communicator
 
 @todo Define
 
-## Window
+### Window
 
 @todo Define
 
-## Type
+### Type
 
 @todo Define
 
