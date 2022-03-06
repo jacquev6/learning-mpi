@@ -35,6 +35,10 @@ A [process](https://en.wikipedia.org/wiki/Process_(computing)) using the MPI inf
 
 @todo Define
 
+## Window
+
+@todo Define
+
 ## Type
 
 @todo Define
@@ -68,8 +72,6 @@ Legend:
 | All-to-all,<br>reduction,<br>scattered | 0<br>1<br>2 | 🟪🟦🟩, ⬛<br>🐶🐱🐷, ⬛<br>♠️♥️♦️, ⬛ | `Reduce_scatter(•)`<br>`Reduce_scatter(•)`<br>`Reduce_scatter(•)` | 🟪🟦🟩, 🟨 (=🟪•🐶•♠️)<br>🐶🐱🐷, 🟧 (=🟦•🐱•♥️)<br>♠️♥️♦️, 🟥 (=🟩•🐷•♦️) |
 | All-to-all,<br>partial reductions,<br>inclusive | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Scan(•)`<br>`Scan(•)`<br>`Scan(•)` | 🟩, 🟩<br>🟪, 🟦 (=🟩•🟪)<br>🟧, 🟥 (=🟩•🟪•🟧) |
 | All-to-all,<br>partial reductions,<br>exclusive | 0<br>1<br>2<br>3 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛<br>🟨, ⬛ | `Exscan(•)`<br>`Exscan(•)`<br>`Exscan(•)`<br>`Exscan(•)` | 🟩, ⬛<br>🟪, 🟩<br>🟧, 🟦 (=🟩•🟪)<br>🟨, 🟥 (=🟩•🟪•🟧) |
-
-@todo Add `Accumulate`, `Fetch_and_op`
 
 @todo Add prefix variants: `I` (non-blocking), `B` (buffered), `M` (matched), `neighbor`
 
