@@ -14,8 +14,10 @@ docker run \
     set -o errexit
 
     mkdir -p build
-    mpic++ memento.cpp -o build/memento
+    mpic++ -g memento.cpp -o build/memento
 
-    mpiexec -v -n 3 build/memento
-    mpiexec -v -n 7 build/memento
+    # We're using Valgrind to *see* the errors, but no effort has been made to *fix* them
+    rm -f build/valgrind-*.log
+    mpiexec -v -n 3 valgrind --leak-check=full --log-file=build/valgrind-3.%p.log build/memento
+    mpiexec -v -n 7 valgrind --leak-check=full --log-file=build/valgrind-7.%p.log build/memento
 """
