@@ -23,10 +23,7 @@ int main(int argc, char* argv[]) {
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  if (size < 3) {
-    std::cerr << "Need at least 3 processes for this memento" << std::endl;
-    return 1;
-  }
+  assert (size >= 3);
 
 
   // One-to-one
@@ -78,9 +75,14 @@ int main(int argc, char* argv[]) {
     MPI_Probe(0, 58, MPI_COMM_WORLD, &status);
     int count;
     MPI_Get_count(&status, MPI_INT, &count);
+    assert(count >= 64);
+    assert(count < 128);
     std::vector<int> data;
     data.resize(count);
     MPI_Recv(data.data(), data.size(), MPI_INT, 0, 58, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    for (int i = 0; i != data.size(); ++i) {
+      assert(data[i] == i);
+    }
   }
 
 
