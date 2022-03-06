@@ -103,6 +103,42 @@ int main(int argc, char* argv[]) {
   }
 
 
+  // One-to-all, same data
+  {
+    int data = 0;
+    if (rank == 0) {
+      data = 42;
+    }
+    MPI_Bcast(
+      &data, 1, MPI_INT,
+      // root, communicator: the 'root' is the sender, and all others are receivers
+      0, MPI_COMM_WORLD);
+    assert(data == 42);
+  }
+
+
+  // One-to-all, same data, dynamic size
+  {
+    std::vector<int> data;
+    int count;
+    if (rank == 0) {
+      count = 64 + rand() % 64;
+      data.resize(count);
+      std::iota(data.begin(), data.end(), 0);
+    }
+    MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    assert(count >= 64);
+    assert(count < 128);
+    if (rank != 0) {
+      data.resize(count);
+    }
+    MPI_Bcast(data.data(), data.size(), MPI_INT, 0, MPI_COMM_WORLD);
+    for (int i = 0; i != data.size(); ++i) {
+      assert(data[i] == i);
+    }
+  }
+
+
   // Usual boilerplate
   MPI_Finalize();
 }
