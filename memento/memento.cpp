@@ -1,7 +1,10 @@
 #include <cassert>
-#include <iostream>
 #include <numeric>
 #include <vector>
+
+// Used only during iterative development
+#include <iostream>
+#include <sstream>
 
 #include <mpi.h>
 
@@ -19,11 +22,11 @@ int main(int argc, char* argv[]) {
 
 
   // Get size of, and rank in, the "World" communicator
-  int size;
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  int comm_size;
+  MPI_Comm_size(MPI_COMM_WORLD, &comm_size);
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  assert (size >= 3);
+  assert (comm_size >= 3);
 
 
   // One-to-one
@@ -135,6 +138,62 @@ int main(int argc, char* argv[]) {
     MPI_Bcast(data.data(), data.size(), MPI_INT, 0, MPI_COMM_WORLD);
     for (int i = 0; i != data.size(); ++i) {
       assert(data[i] == i);
+    }
+  }
+
+
+  // One-to-all, different data
+  {
+    std::vector<int> data_to_send;
+    int count_by_process = 10;
+    std::vector<int> data_to_recv(count_by_process);
+    if (rank == 0) {
+      data_to_send.resize(comm_size * count_by_process);
+      std::iota(data_to_send.begin(), data_to_send.end(), 0);
+    }
+    MPI_Scatter(
+      data_to_send.data(), count_by_process, MPI_INT,
+      data_to_recv.data(), count_by_process, MPI_INT,
+      0, MPI_COMM_WORLD);
+    for (int i = 0; i != count_by_process; ++i) {
+      assert(data_to_recv[i] == rank * count_by_process + i);
+    }
+  }
+
+
+  // All-to-one
+  {
+    int count_by_process = 10;
+    std::vector<int> data_to_send(count_by_process);
+    std::iota(data_to_send.begin(), data_to_send.end(), rank * count_by_process);
+    std::vector<int> data_to_recv;
+    if (rank == 0) {
+      data_to_recv.resize(comm_size * count_by_process);
+    }
+    MPI_Gather(
+      data_to_send.data(), count_by_process, MPI_INT,
+      data_to_recv.data(), count_by_process, MPI_INT,
+      0, MPI_COMM_WORLD);
+    if (rank == 0) {
+      for (int i = 0; i != data_to_recv.size(); ++i) {
+        assert(data_to_recv[i] == i);
+      }
+    }
+  }
+
+
+  // All-to-all
+  {
+    int count_by_process = 10;
+    std::vector<int> data_to_send(count_by_process);
+    std::iota(data_to_send.begin(), data_to_send.end(), rank * count_by_process);
+    std::vector<int> data_to_recv(comm_size * count_by_process);
+    MPI_Allgather(
+      data_to_send.data(), count_by_process, MPI_INT,
+      data_to_recv.data(), count_by_process, MPI_INT,
+      MPI_COMM_WORLD);
+    for (int i = 0; i != data_to_recv.size(); ++i) {
+      assert(data_to_recv[i] == i);
     }
   }
 
