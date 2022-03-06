@@ -268,7 +268,9 @@ int main(int argc, char* argv[]) {
   {
     int data_to_send = 100 * rank;
     int data_to_receive = 42;
+
     MPI_Reduce(&data_to_send, &data_to_receive, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
     if (rank == 0) {
       assert(data_to_receive == 100 * comm_size * (comm_size - 1) / 2);
     }
@@ -279,7 +281,9 @@ int main(int argc, char* argv[]) {
   {
     int data_to_send = 100 * rank;
     int data_to_receive = 42;
+
     MPI_Allreduce(&data_to_send, &data_to_receive, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
     assert(data_to_receive == 100 * comm_size * (comm_size - 1) / 2);
   }
 
