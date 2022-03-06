@@ -94,13 +94,8 @@ int main(int argc, char* argv[]) {
 
 
   // One-to-one, dynamic tag and source
-  if (rank < 2) {
-    int data = 1000 * rank;
-    int tag = 2000 * rank;
-
-    MPI_Send(&data, 1, MPI_INT, 2, tag, MPI_COMM_WORLD);
-  } else {
-    for (int i = 0; i != 2; ++i) {
+  if (rank == 0) {
+    for (int i = 1; i != comm_size; ++i) {
       MPI_Status status;
       MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
       assert(status.MPI_TAG == 2000 * status.MPI_SOURCE);
@@ -109,7 +104,18 @@ int main(int argc, char* argv[]) {
 
       assert(data == 1000 * status.MPI_SOURCE);
     }
+  } else {
+    int data = 1000 * rank;
+    int tag = 2000 * rank;
+
+    MPI_Send(&data, 1, MPI_INT, 0, tag, MPI_COMM_WORLD);
   }
+
+
+  // Synchronization
+  // Required to separate previous example from following: without the barrier,
+  // the previous example can receive messages sent by the next example
+  MPI_Barrier(MPI_COMM_WORLD);
 
 
   // One-to-one-to-one
@@ -264,7 +270,7 @@ int main(int argc, char* argv[]) {
     int data_to_receive = 42;
     MPI_Reduce(&data_to_send, &data_to_receive, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     if (rank == 0) {
-      assert(data_to_receive = comm_size * 100 + comm_size * (comm_size + 1) / 2);
+      assert(data_to_receive == 100 * comm_size * (comm_size - 1) / 2);
     }
   }
 
@@ -274,7 +280,7 @@ int main(int argc, char* argv[]) {
     int data_to_send = 100 * rank;
     int data_to_receive = 42;
     MPI_Allreduce(&data_to_send, &data_to_receive, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-    assert(data_to_receive = comm_size * 100 + comm_size * (comm_size + 1) / 2);
+    assert(data_to_receive == 100 * comm_size * (comm_size - 1) / 2);
   }
 
 

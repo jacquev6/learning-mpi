@@ -17,4 +17,5 @@ docker run \
     mpic++ memento.cpp -o build/memento
 
     mpiexec -v -n 3 build/memento
+    mpiexec -v -n 7 build/memento
 """
