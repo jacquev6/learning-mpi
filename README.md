@@ -23,6 +23,7 @@ Acronyms
 - ORTE: Open Run Time Environment: the runtime part of OpenMPI
 - PMIx: [Process Management Interface](https://pmix.github.io/)
 - OPMI: [Open PMIx](https://openpmix.github.io/), an implementation of PMIx
+- RMA: Remote Memory Access
 
 Concepts
 --------
@@ -53,7 +54,7 @@ A communicator can be created from a group using `MPI_Comm_create` or `MPI_Comm_
 
 ### Window
 
-@todo Define
+A "window" is an object that allows remote memory access (RMA).
 
 ### Type
 
@@ -64,8 +65,8 @@ Synchronization API
 
 `MPI_Barrier` implements the usual barrier synchronization: each processor waits for all other processors to have reached the barrier
 
-Communication API
------------------
+Messaging API
+-------------
 
 These API, and a bit more, are demonstrated in the [memento](memento) example.
 
@@ -121,6 +122,16 @@ Some all-to-* API have a variant suffixed by `v`, that communicate a varying amo
 #### Varying types
 
 `MPI_Ialltoallw` allow additional flexibility over `MPI_Ialltoallv` by specifying different types.
+
+Remote Memory Access API
+------------------------
+
+@todo
+
+File API
+--------
+
+@todo
 
 Examples
 ========
