@@ -33,7 +33,7 @@ A [process](https://en.wikipedia.org/wiki/Process_(computing)) using the MPI inf
 
 ### Communicator
 
-@todo Define
+@todo Define communicator and neighbors
 
 ### Window
 
@@ -77,16 +77,34 @@ Legend:
 
 ### Variants
 
-@todo Add prefix variants: `B` (buffered), `M` (matched), `neighbor`
-
-@todo Add suffix variants: `v`, `w`
-
 #### Non-blocking
 
 Most API have a variant prefixed with `I` (*e.g.* `MPI_Isend`) that doesn't block.
 These variants populate an `MPI_Request` object.
 `MPI_Test` can be used to poll that object for completion,
 and `MPI_Wait` can be used to wait (block) until it's complete.
+
+#### Buffered
+
+`MPI_Bsend`, along with `MPI_Buffer_attach`, uses user-managed buffers.
+
+#### Matched
+
+`MPI_Mprobe` and `MPI_Mrecv` can be used to ensure the message received *is* the message matched by the probe.
+With `MPI_Probe` and `MPI_Recv`, another message could be received even if the source and tag are set properly.
+
+#### Neighbor
+
+`MPI_Alltoall` and `MPI_Allgather` have "neighbor" variants the send data only to the neighboring processes,
+as defined in the topology of the communicator.
+
+#### Varying count
+
+Some all-to-* API have a variant suffixed by `v`, that communicate a varying amount of data from each process.
+
+#### Varying types
+
+`MPI_Ialltoallw` allow additional flexibility over `MPI_Ialltoallv` by specifying different types.
 
 Examples
 ========
