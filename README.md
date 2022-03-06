@@ -538,19 +538,16 @@ These API, and a bit more, are demonstrated in the [memento](memento) example.
 Legend:
 - ⬛: uninitialized data
 - 🟪🟦🟩🟨🟧🟥: initialized data
-- 3️⃣: size of data
 
 | Purpose | Processor | Before | Action | After |
 | --- | --- | --- | --- | --- |
-| One-to-one | 0<br>1 | 🟩<br>⬛ | `Send(🟩, 1)`<br>`Recv(⬛, 0)` | 🟩<br>🟩 |
-| One-to-one,<br>dynamic size | 0<br><br>1<br><br>&nbsp; | 🟩<br><br>-<br>-<br>⬛ | `Send(🟩, 1)`<br><br>`Probe(0)`, `Get_count`<br>allocate<br>`Recv(⬛, 0)` | 🟩<br><br>-<br>⬛<br>🟩 |
-| One-to-all,<br>same data | 0<br>1<br>2 | 🟩<br>⬛<br>⬛ | `Bcast(🟩, 0)`<br>`Bcast(⬛, 0)`<br>`Bcast(⬛, 0)` | 🟩<br>🟩<br>🟩 |
-| One-to-all,<br>same data,<br>dynamic size | 0<br><br><br>N<br><br>&nbsp; | 3️⃣, 🟩🟪🟧<br>3️⃣, 🟩🟪🟧<br><br>⬛<br>3️⃣<br>3️⃣, ⬛⬛⬛ | `Bcast(3️⃣, 0)`<br>`Bcast(🟩🟪🟧, 0)`<br><br>`Bcast(⬛, 0)`<br>allocate<br>`Bcast(⬛⬛⬛, 0)` | 3️⃣, 🟩🟪🟧<br>3️⃣, 🟩🟪🟧<br><br>3️⃣<br>3️⃣, ⬛⬛⬛<br>3️⃣, 🟩🟪🟧 |
+| One-to-one | 0<br>1 | 🟩<br>⬛ | `Send(1)`<br>`Recv(0)` | 🟩<br>🟩 |
+| One-to-one,<br>dynamic size | 0<br><br>1<br><br>&nbsp; | 🟩<br><br>-<br>-<br>⬛ | `Send(1)`<br><br>`Probe(0)`, `Get_count`<br>allocate<br>`Recv(0)` | 🟩<br><br>-<br>⬛<br>🟩 |
+| One-to-all,<br>same data | 0<br>1<br>2 | 🟩<br>⬛<br>⬛ | `Bcast(0)`<br>`Bcast(0)`<br>`Bcast(0)` | 🟩<br>🟩<br>🟩 |
 | One-to-all,<br>different data | 0<br>1<br>2 | ⬛, 🟩🟪🟧<br>⬛<br>⬛ | `Scatter(0)`<br>`Scatter(0)`<br>`Scatter(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
 | All-to-one | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪<br>🟧 | `Gather(0)`<br>`Gather(0)`<br>`Gather(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
 | All-to-all | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪, ⬛⬛⬛<br>🟧, ⬛⬛⬛ | `Allgather(0)`<br>`Allgather(0)`<br>`Allgather(0)` | 🟩, 🟩🟪🟧<br>🟪, 🟩🟪🟧<br>🟧, 🟩🟪🟧 |
 | All-to-one,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪<br>🟧 | `Reduce(0)`<br>`Reduce(0)`<br>`Reduce(0)` | 🟩, 🟥<br>🟪<br>🟧 |
-| All-to-one,<br>reduction,<br>in place | 0<br>1<br>2 | 🟩<br>🟪<br>🟧 | `Reduce(0, IN_PLACE)`<br>`Reduce(0, IN_PLACE)`<br>`Reduce(0, IN_PLACE)` | 🟥<br>🟪<br>🟧 |
 | All-to-all,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Allreduce()`<br>`Allreduce()`<br>`Allreduce()` | 🟩, 🟥<br>🟪, 🟥<br>🟧, 🟥 |
 
 @todo Add `Sendrecv`, `Accumulate`, [`Alltoall`](https://stackoverflow.com/questions/15049190/difference-between-mpi-allgather-and-mpi-alltoall-functions), `Scan`, `Exscan`, `Reduce_scatter`, `Fetch_and_op`
