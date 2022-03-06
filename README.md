@@ -33,7 +33,23 @@ A "processor" is a [process](https://en.wikipedia.org/wiki/Process_(computing)) 
 
 ### Communicator
 
-@todo Define communicator and neighbors
+A "communicator" is a set of processors that can communicate together.
+A single communicator exists at the start of the program: `MPI_COMM_WORLD`, which includes all processors.
+New communicators can be created using *e.g.* `MPI_Comm_create` or `MPI_Comm_split`.
+
+To allow communication without interferences between several communicators,
+each communicator contains not only the set of processors, but also a unique identifier.
+The set of processors in a communicator is called a "group".
+A group is nothing more that a set of processors.
+The group of a communicator can be retrieved using `MPI_Comm_group`.
+General set manipulation is provided by API like `MPI_Group_union` and `MPI_Group_intersection`.
+A communicator can be created from a group using `MPI_Comm_create` or `MPI_Comm_create_group`.
+
+@todo Define inter-communicator
+
+@todo Define intra-communicator
+
+@todo Define neighbor
 
 ### Window
 
