@@ -58,7 +58,17 @@ A "window" is an object that allows remote memory access (RMA).
 
 ### Type
 
-@todo Define
+Similar to a type in a programming language, but defined at runtime for use with MPI.
+Manipulated with the `MPI_Type_*` API.
+
+All communication API take the type(s) of the data they transfer.
+This is used by the MPI infrastructure to *e.g.* translate integers between big- and little-endian format on an heterogeneous cluster.
+
+## Operation
+
+A user-defined binary function to be used with *e.g.* `MPI_Reduce`.
+Registered with the MPI infrastructure using `MPI_Op_create`, unregistered using `MPI_Op_free`.
+See example [Complex reduce](complex-reduce).
 
 Synchronization API
 -------------------
@@ -256,3 +266,11 @@ Goals:
 This example (tries to) implement a fixed-time-increment simulation of discs moving on a rail.
 
 It started out as a discrete-event simulation, but distributing this kind of simulation is a research domain on its own, so not well suited for a quick example focused on learning MPI!
+
+Complex reduce
+--------------
+
+[Source code](complex-reduce)
+
+Goals:
+- experiment with user-defined types and operations
