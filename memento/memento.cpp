@@ -106,6 +106,25 @@ int main(int argc, char* argv[]) {
   }
 
 
+  // One-to-one-to-one
+  if (rank == 0) {
+    int recv_data = 0;
+    MPI_Recv(&recv_data, 1, MPI_INT, 1, 59, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    assert(recv_data == 100);
+  } else if (rank == 1) {
+    int send_data = 100;
+    int recv_data = 0;
+    MPI_Sendrecv(
+      &send_data, 1, MPI_INT, 0, 59,
+      &recv_data, 1, MPI_INT, 2, 60,
+      MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    assert(recv_data == 200);
+  } else if (rank == 2) {
+    int send_data = 200;
+    MPI_Send(&send_data, 1, MPI_INT, 1, 60, MPI_COMM_WORLD);
+  }
+
+
   // One-to-all, same data
   {
     int data = 0;

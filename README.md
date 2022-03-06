@@ -543,6 +543,7 @@ Legend:
 | --- | --- | --- | --- | --- |
 | One-to-one | 0<br>1 | 🟩<br>⬛ | `Send(1)`<br>`Recv(0)` | 🟩<br>🟩 |
 | One-to-one,<br>dynamic size | 0<br><br>1<br><br>&nbsp; | 🟩<br><br>-<br>-<br>⬛ | `Send(1)`<br><br>`Probe(0)`, `Get_count`<br>allocate<br>`Recv(0)` | 🟩<br><br>-<br>⬛<br>🟩 |
+| One-to-one-to-one | 0<br>1<br>2 | ⬛<br>🟩, ⬛<br>🟪 | `Recv(1)`<br>`Sendrecv(0, 1)`<br>`Send(1)` | 🟩<br>🟩, 🟪<br>🟪
 | One-to-all,<br>same data | 0<br>1<br>2 | 🟩<br>⬛<br>⬛ | `Bcast(0)`<br>`Bcast(0)`<br>`Bcast(0)` | 🟩<br>🟩<br>🟩 |
 | One-to-all,<br>different data | 0<br>1<br>2 | ⬛, 🟩🟪🟧<br>⬛<br>⬛ | `Scatter(0)`<br>`Scatter(0)`<br>`Scatter(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
 | All-to-one | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪<br>🟧 | `Gather(0)`<br>`Gather(0)`<br>`Gather(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
@@ -550,7 +551,7 @@ Legend:
 | All-to-one,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪<br>🟧 | `Reduce(0)`<br>`Reduce(0)`<br>`Reduce(0)` | 🟩, 🟥<br>🟪<br>🟧 |
 | All-to-all,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Allreduce()`<br>`Allreduce()`<br>`Allreduce()` | 🟩, 🟥<br>🟪, 🟥<br>🟧, 🟥 |
 
-@todo Add `Sendrecv`, `Accumulate`, [`Alltoall`](https://stackoverflow.com/questions/15049190/difference-between-mpi-allgather-and-mpi-alltoall-functions), `Scan`, `Exscan`, `Reduce_scatter`, `Fetch_and_op`
+@todo Add `Accumulate`, [`Alltoall`](https://stackoverflow.com/questions/15049190/difference-between-mpi-allgather-and-mpi-alltoall-functions), `Scan`, `Exscan`, `Reduce_scatter`, `Fetch_and_op`
 
 @todo Add prefix variants: `I` (non-blocking), `B` (buffered), `M` (matched), `neighbor`
 
