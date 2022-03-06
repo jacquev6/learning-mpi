@@ -32,6 +32,7 @@ int main(int argc, char* argv[]) {
   // One-to-one
   if (rank == 0) {
     int data = 0xAABBCCDD;
+
     MPI_Send(
       // data, count, type: 'count' is the number of elements of type 'type' to be sent,
       // so the actual number of bytes sent is 'count * MPI_Type_size(type)'
@@ -46,6 +47,7 @@ int main(int argc, char* argv[]) {
   } else if (rank == 1) {
     int data = 0;
     MPI_Status status;
+
     MPI_Recv(
       // data, count, type
       &data, 1, MPI_INT,
@@ -72,6 +74,7 @@ int main(int argc, char* argv[]) {
     std::vector<int> data;
     data.resize(64 + rand() % 64);
     std::iota(data.begin(), data.end(), 0);
+
     MPI_Send(data.data(), data.size(), MPI_INT, 1, 58, MPI_COMM_WORLD);
   } else if (rank == 1) {
     MPI_Status status;
@@ -83,6 +86,7 @@ int main(int argc, char* argv[]) {
     std::vector<int> data;
     data.resize(count);
     MPI_Recv(data.data(), data.size(), MPI_INT, 0, 58, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
     for (int i = 0; i != data.size(); ++i) {
       assert(data[i] == i);
     }
@@ -93,6 +97,7 @@ int main(int argc, char* argv[]) {
   if (rank < 2) {
     int data = 1000 * rank;
     int tag = 2000 * rank;
+
     MPI_Send(&data, 1, MPI_INT, 2, tag, MPI_COMM_WORLD);
   } else {
     for (int i = 0; i != 2; ++i) {
@@ -101,6 +106,7 @@ int main(int argc, char* argv[]) {
       assert(status.MPI_TAG == 2000 * status.MPI_SOURCE);
       int data = 0;
       MPI_Recv(&data, 1, MPI_INT, status.MPI_SOURCE, status.MPI_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
       assert(data == 1000 * status.MPI_SOURCE);
     }
   }
@@ -109,18 +115,23 @@ int main(int argc, char* argv[]) {
   // One-to-one-to-one
   if (rank == 0) {
     int recv_data = 0;
+
     MPI_Recv(&recv_data, 1, MPI_INT, 1, 59, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
     assert(recv_data == 100);
   } else if (rank == 1) {
     int send_data = 100;
     int recv_data = 0;
+
     MPI_Sendrecv(
       &send_data, 1, MPI_INT, 0, 59,
       &recv_data, 1, MPI_INT, 2, 60,
       MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
     assert(recv_data == 200);
   } else if (rank == 2) {
     int send_data = 200;
+
     MPI_Send(&send_data, 1, MPI_INT, 1, 60, MPI_COMM_WORLD);
   }
 
@@ -131,10 +142,12 @@ int main(int argc, char* argv[]) {
     if (rank == 0) {
       data = 42;
     }
+
     MPI_Bcast(
       &data, 1, MPI_INT,
       // root, communicator: the 'root' is the sender, and all others are receivers
       0, MPI_COMM_WORLD);
+
     assert(data == 42);
   }
 
@@ -148,6 +161,7 @@ int main(int argc, char* argv[]) {
       data.resize(count);
       std::iota(data.begin(), data.end(), 0);
     }
+
     MPI_Bcast(&count, 1, MPI_INT, 0, MPI_COMM_WORLD);
     assert(count >= 64);
     assert(count < 128);
@@ -155,6 +169,7 @@ int main(int argc, char* argv[]) {
       data.resize(count);
     }
     MPI_Bcast(data.data(), data.size(), MPI_INT, 0, MPI_COMM_WORLD);
+
     for (int i = 0; i != data.size(); ++i) {
       assert(data[i] == i);
     }
@@ -170,10 +185,12 @@ int main(int argc, char* argv[]) {
       data_to_send.resize(comm_size * count_by_process);
       std::iota(data_to_send.begin(), data_to_send.end(), 0);
     }
+
     MPI_Scatter(
       data_to_send.data(), count_by_process, MPI_INT,
       data_to_recv.data(), count_by_process, MPI_INT,
       0, MPI_COMM_WORLD);
+
     for (int i = 0; i != count_by_process; ++i) {
       assert(data_to_recv[i] == rank * count_by_process + i);
     }
@@ -189,10 +206,12 @@ int main(int argc, char* argv[]) {
     if (rank == 0) {
       data_to_recv.resize(comm_size * count_by_process);
     }
+
     MPI_Gather(
       data_to_send.data(), count_by_process, MPI_INT,
       data_to_recv.data(), count_by_process, MPI_INT,
       0, MPI_COMM_WORLD);
+
     if (rank == 0) {
       for (int i = 0; i != data_to_recv.size(); ++i) {
         assert(data_to_recv[i] == i);
@@ -207,10 +226,12 @@ int main(int argc, char* argv[]) {
     std::vector<int> data_to_send(count_by_process);
     std::iota(data_to_send.begin(), data_to_send.end(), rank * count_by_process);
     std::vector<int> data_to_recv(comm_size * count_by_process);
+
     MPI_Allgather(
       data_to_send.data(), count_by_process, MPI_INT,
       data_to_recv.data(), count_by_process, MPI_INT,
       MPI_COMM_WORLD);
+
     for (int i = 0; i != data_to_recv.size(); ++i) {
       assert(data_to_recv[i] == i);
     }
@@ -223,10 +244,12 @@ int main(int argc, char* argv[]) {
     std::vector<int> data_to_send(comm_size * count_by_block);
     std::iota(data_to_send.begin(), data_to_send.end(), (rank + 1) * 100);
     std::vector<int> data_to_recv(comm_size * count_by_block);
+
     MPI_Alltoall(
       data_to_send.data(), count_by_block, MPI_INT,
       data_to_recv.data(), count_by_block, MPI_INT,
       MPI_COMM_WORLD);
+
     for (int i = 0; i != data_to_recv.size(); ++i) {
       int block_index = i / count_by_block;
       int item_index = i % count_by_block;
