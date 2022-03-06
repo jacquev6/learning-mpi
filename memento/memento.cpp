@@ -201,7 +201,7 @@ int main(int argc, char* argv[]) {
   }
 
 
-  // All-to-all
+  // All-to-all, same data
   {
     int count_by_process = 10;
     std::vector<int> data_to_send(count_by_process);
@@ -213,6 +213,24 @@ int main(int argc, char* argv[]) {
       MPI_COMM_WORLD);
     for (int i = 0; i != data_to_recv.size(); ++i) {
       assert(data_to_recv[i] == i);
+    }
+  }
+
+
+  // All-to-all, different data (transposition)
+  {
+    int count_by_block = 7;
+    std::vector<int> data_to_send(comm_size * count_by_block);
+    std::iota(data_to_send.begin(), data_to_send.end(), (rank + 1) * 100);
+    std::vector<int> data_to_recv(comm_size * count_by_block);
+    MPI_Alltoall(
+      data_to_send.data(), count_by_block, MPI_INT,
+      data_to_recv.data(), count_by_block, MPI_INT,
+      MPI_COMM_WORLD);
+    for (int i = 0; i != data_to_recv.size(); ++i) {
+      int block_index = i / count_by_block;
+      int item_index = i % count_by_block;
+      assert(data_to_recv[i] == (block_index + 1) * 100 + rank * count_by_block + item_index);
     }
   }
 

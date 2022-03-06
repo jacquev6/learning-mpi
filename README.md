@@ -537,7 +537,7 @@ These API, and a bit more, are demonstrated in the [memento](memento) example.
 
 Legend:
 - ⬛: uninitialized data
-- 🟪🟦🟩🟨🟧🟥: initialized data
+- 🟪🟦🟩🟨🟧🟥🐶🐱🐷♠️♥️♦️: initialized data
 
 | Purpose | Processor | Before | Action | After |
 | --- | --- | --- | --- | --- |
@@ -547,11 +547,12 @@ Legend:
 | One-to-all,<br>same data | 0<br>1<br>2 | 🟩<br>⬛<br>⬛ | `Bcast(0)`<br>`Bcast(0)`<br>`Bcast(0)` | 🟩<br>🟩<br>🟩 |
 | One-to-all,<br>different data | 0<br>1<br>2 | ⬛, 🟩🟪🟧<br>⬛<br>⬛ | `Scatter(0)`<br>`Scatter(0)`<br>`Scatter(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
 | All-to-one | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪<br>🟧 | `Gather(0)`<br>`Gather(0)`<br>`Gather(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
-| All-to-all | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪, ⬛⬛⬛<br>🟧, ⬛⬛⬛ | `Allgather(0)`<br>`Allgather(0)`<br>`Allgather(0)` | 🟩, 🟩🟪🟧<br>🟪, 🟩🟪🟧<br>🟧, 🟩🟪🟧 |
+| All-to-all,<br>same data | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪, ⬛⬛⬛<br>🟧, ⬛⬛⬛ | `Allgather(0)`<br>`Allgather(0)`<br>`Allgather(0)` | 🟩, 🟩🟪🟧<br>🟪, 🟩🟪🟧<br>🟧, 🟩🟪🟧 |
+| All-to-all,<br>different data<br>(transposition) | 0<br>1<br>2 | 🟪🟦🟩, ⬛⬛⬛<br>🐶🐱🐷, ⬛⬛⬛<br>♠️♥️♦️, ⬛⬛⬛ | `MPI_Alltoall`<br>`MPI_Alltoall`<br>`MPI_Alltoall` | 🟪🟦🟩, 🟪🐶♠️<br>🐶🐱🐷, 🟦🐱♥️<br>♠️♥️♦️, 🟩🐷♦️ |
 | All-to-one,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪<br>🟧 | `Reduce(0)`<br>`Reduce(0)`<br>`Reduce(0)` | 🟩, 🟥<br>🟪<br>🟧 |
 | All-to-all,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Allreduce()`<br>`Allreduce()`<br>`Allreduce()` | 🟩, 🟥<br>🟪, 🟥<br>🟧, 🟥 |
 
-@todo Add `Accumulate`, [`Alltoall`](https://stackoverflow.com/questions/15049190/difference-between-mpi-allgather-and-mpi-alltoall-functions), `Scan`, `Exscan`, `Reduce_scatter`, `Fetch_and_op`
+@todo Add `Accumulate`, `Scan`, `Exscan`, `Reduce_scatter`, `Fetch_and_op`
 
 @todo Add prefix variants: `I` (non-blocking), `B` (buffered), `M` (matched), `neighbor`
 
