@@ -29,7 +29,7 @@ Concepts
 
 ### Processor
 
-A [process](https://en.wikipedia.org/wiki/Process_(computing)) using the MPI infrastructure.
+A "processor" is a [process](https://en.wikipedia.org/wiki/Process_(computing)) using the MPI infrastructure.
 
 ### Communicator
 
@@ -95,12 +95,12 @@ With `MPI_Probe` and `MPI_Recv`, another message could be received even if the s
 
 #### Neighbor
 
-`MPI_Alltoall` and `MPI_Allgather` have "neighbor" variants the send data only to the neighboring processes,
+`MPI_Alltoall` and `MPI_Allgather` have "neighbor" variants the send data only to the neighboring processors,
 as defined in the topology of the communicator.
 
 #### Varying count
 
-Some all-to-* API have a variant suffixed by `v`, that communicate a varying amount of data from each process.
+Some all-to-* API have a variant suffixed by `v`, that communicate a varying amount of data from each processor.
 
 #### Varying types
 
@@ -145,18 +145,18 @@ Try and run without the wrapper, to understand what it does: see example "No wra
 Looking at the code:
 
 - Everything is wrapped between `MPI_Init` and `MPI_Finalize`
-- Each process gets a "rank", using `MPI_Comm_rank`, and knows how many processes there are in total, using `MPI_Comm_size`. This requires that `mpiexec` does all bookkeeping to let these processes, and only them, communicate.
-- Each process then chooses its role based on its rank, à la `fork`.
-- `MPI_Send` is used to send a message to another process, identified by its rank.
-- `MPI_Recv` is used to receive a message from another process, also identified by its rank.
+- Each processor gets a "rank", using `MPI_Comm_rank`, and knows how many processors there are in total, using `MPI_Comm_size`. This requires that `mpiexec` does all bookkeeping to let these processes, and only them, communicate.
+- Each processor then chooses its role based on its rank, à la `fork`.
+- `MPI_Send` is used to send a message to another processor, identified by its rank.
+- `MPI_Recv` is used to receive a message from another processor, also identified by its rank.
 
-@todo Is there a higher level of abstraction than rank to choose the role of each process?
+Is there a higher level of abstraction than rank to choose the role of each processor? No
 
 @todo Can binaries built from different source code communicate? (*e.g.* a coordinator and several workers)
 
 Non-blocking "send" and "receive" functions: `MPI_Iprobe` *et al.*
 
-What happens when a process calls `MPI_Send` while no other process is calling `MPI_Recv`? Everything enters an active wait loop, making no progress and using 100% CPU.
+What happens when a processor calls `MPI_Send` while no other processor is calling `MPI_Recv`? Everything enters an active wait loop, making no progress and using 100% CPU.
 
 How does one run this example on several machines? See example "Coordination" below.
 
@@ -169,11 +169,11 @@ Ring
 
 The goal of this example is for me to write something not completely trivial using the most basic API.
 
-MPI is *very* flexible: it only provides a way to send individual messages from a process to an other.
+MPI is *very* flexible: it only provides a way to send individual messages from a processor to an other.
 No request-response, no dataflow (like UDP, not like TCP), no RPC, nothing that gives structure to the exchange.
 It's low-level, and thus both very simple and sometimes too generic and flexible.
 
-Termination conditions for this example are a bit subtle: process 0 must stop after it *receives* the last message from the last process, but all other processes must stop after *sending* the last message.
+Termination conditions for this example are a bit subtle: processor 0 must stop after it *receives* the last message from the last processor, but all other processors must stop after *sending* the last message.
 This ring feels like a pattern that could be abstracted in a library, with others.
 
 MPI patterns: see "Resources" above.
