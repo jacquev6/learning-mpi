@@ -189,7 +189,7 @@ Looking at the code:
 
 Is there a higher level of abstraction than rank to choose the role of each processor? No
 
-@todo Can binaries built from different source code communicate? (*e.g.* a coordinator and several workers)
+Can binaries built from different source code communicate? (*e.g.* a coordinator and several workers): yes, using the MIMD feature of `mpiexec`.
 
 Non-blocking "send" and "receive" functions: `MPI_Iprobe` *et al.*
 
