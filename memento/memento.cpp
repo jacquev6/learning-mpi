@@ -288,6 +288,24 @@ int main(int argc, char* argv[]) {
   }
 
 
+  // All-to-all, reduction, scattered
+  {
+    int count_by_process = 5;
+    std::vector<int> data_to_send(comm_size * count_by_process);
+    std::iota(data_to_send.begin(), data_to_send.end(), 100 * (rank + 1));
+    std::vector<int> data_to_receive(count_by_process);
+    // (Here, all processes receive the same amount of data)
+    std::vector<int> recvcounts(comm_size, count_by_process);
+
+    MPI_Reduce_scatter(data_to_send.data(), data_to_receive.data(), recvcounts.data(), MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
+    for (int i = 0; i != data_to_receive.size(); ++i) {
+      const int index_in_data_to_send = rank * count_by_process + i;
+      assert(data_to_receive[i] == 100 * comm_size * (comm_size + 1) / 2 + comm_size * index_in_data_to_send);
+    }
+  }
+
+
   // All-to-all, partial reductions, inclusive
   {
     int data_to_send = 100 * rank;
