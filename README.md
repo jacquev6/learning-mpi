@@ -5,6 +5,7 @@ Resources
 =========
 
 - The [Wikipedia article about MPI](https://en.wikipedia.org/wiki/Message_Passing_Interface)
+- The [MPI standards](https://www.mpi-forum.org/docs/)
 - [OpenMPI 4.1 documentation](https://www.open-mpi.org/doc/v4.1/)
 - The [Wikipedia article about Flynn's taxonomy](https://en.wikipedia.org/wiki/Flynn%27s_taxonomy)
 - This [MPI tutorial](https://mpitutorial.com), quite complete, easy to read
