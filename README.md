@@ -532,6 +532,8 @@ Synchronization API
 Communication API
 -----------------
 
+These API, and a bit more, are demonstrated in the [memento](memento) example.
+
 Legend:
 - ⬛: uninitialized data
 - 🟪🟦🟩🟨🟧🟥: initialized data
