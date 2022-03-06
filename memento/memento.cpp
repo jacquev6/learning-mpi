@@ -288,6 +288,17 @@ int main(int argc, char* argv[]) {
   }
 
 
+  // All-to-all, partial reductions
+  {
+    int data_to_send = 100 * rank;
+    int data_to_receive = 42;
+
+    MPI_Scan(&data_to_send, &data_to_receive, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+
+    assert(data_to_receive == 100 * rank * (rank + 1) / 2);
+  }
+
+
   // Usual boilerplate
   MPI_Finalize();
 }
