@@ -14,6 +14,14 @@ Resources
 Memento
 =======
 
+@todo Investigate how buffering is specified and implemented
+
+@todo Investigate what the MPI specification says about performances requirements
+
+@todo Investigate if the MPI spec says something about computations and transfers for operations like `MPI_Reduce`
+
+@todo What is MPI-IO? (See, e.g. https://wgropp.cs.illinois.edu/courses/cs598-s16/lectures/lecture32.pdf)
+
 Acronyms
 --------
 
