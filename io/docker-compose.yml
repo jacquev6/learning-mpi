@@ -1,0 +1,27 @@
+version: "3.3"
+services:
+  node-1:
+    build: .
+    working_dir: /wd
+    volumes:
+      - ./wd:/wd
+  node-2:
+    build: .
+    working_dir: /wd
+    volumes:
+      - ./wd:/wd
+  node-3:
+    build: .
+    working_dir: /wd
+    volumes:
+      - ./wd:/wd
+  node-4:
+    depends_on:
+      - node-1
+      - node-2
+      - node-3
+    build: .
+    working_dir: /wd
+    volumes:
+      - ./wd:/wd
+    command: mpiexec --allow-run-as-root --host node-1,node-2,node-3,node-4 io

@@ -20,8 +20,6 @@ Memento
 
 @todo Investigate if the MPI spec says something about computations and transfers for operations like `MPI_Reduce`
 
-@todo What is MPI-IO? (See, e.g. https://wgropp.cs.illinois.edu/courses/cs598-s16/lectures/lecture32.pdf)
-
 Acronyms
 --------
 
@@ -149,7 +147,11 @@ Remote Memory Access API
 File API
 --------
 
-@todo
+The `MPI_File_*` API implements the "MPI IO" capabilities.
+Each processor can for example read or write a different part of a given file, in an efficient way, coordinated by MPI.
+Files must be accessible from all nodes running the processors.
+
+See very basic usage in example [io](io).
 
 Examples
 ========
