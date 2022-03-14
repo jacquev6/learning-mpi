@@ -102,7 +102,7 @@ Legend:
 | All-to-one | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪<br>🟧 | `Gather(0)`<br>`Gather(0)`<br>`Gather(0)` | 🟩, 🟩🟪🟧<br>🟪<br>🟧 |
 | All-to-all,<br>same data | 0<br>1<br>2 | 🟩, ⬛⬛⬛<br>🟪, ⬛⬛⬛<br>🟧, ⬛⬛⬛ | `Allgather(0)`<br>`Allgather(0)`<br>`Allgather(0)` | 🟩, 🟩🟪🟧<br>🟪, 🟩🟪🟧<br>🟧, 🟩🟪🟧 |
 | All-to-all,<br>different data<br>(transposition) | 0<br>1<br>2 | 🟪🟦🟩, ⬛⬛⬛<br>🐶🐱🐷, ⬛⬛⬛<br>♠️♥️♦️, ⬛⬛⬛ | `Alltoall()`<br>`Alltoall()`<br>`Alltoall()` | 🟪🟦🟩, 🟪🐶♠️<br>🐶🐱🐷, 🟦🐱♥️<br>♠️♥️♦️, 🟩🐷♦️ |
-| All-to-one,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪<br>🟧 | `Reduce(0)`<br>`Reduce(0)`<br>`Reduce(0)` | 🟩, 🟥 (=🟩•🟪•🟧)<br>🟪<br>🟧 |
+| All-to-one,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪<br>🟧 | `Reduce(0, •)`<br>`Reduce(0, •)`<br>`Reduce(0, •)` | 🟩, 🟥 (=🟩•🟪•🟧)<br>🟪<br>🟧 |
 | All-to-all,<br>reduction | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Allreduce(•)`<br>`Allreduce(•)`<br>`Allreduce(•)` | 🟩, 🟥 (=🟩•🟪•🟧)<br>🟪, 🟥<br>🟧, 🟥 |
 | All-to-all,<br>reduction,<br>scattered | 0<br>1<br>2 | 🟪🟦🟩, ⬛<br>🐶🐱🐷, ⬛<br>♠️♥️♦️, ⬛ | `Reduce_scatter(•)`<br>`Reduce_scatter(•)`<br>`Reduce_scatter(•)` | 🟪🟦🟩, 🟨 (=🟪•🐶•♠️)<br>🐶🐱🐷, 🟧 (=🟦•🐱•♥️)<br>♠️♥️♦️, 🟥 (=🟩•🐷•♦️) |
 | All-to-all,<br>partial reductions,<br>inclusive | 0<br>1<br>2 | 🟩, ⬛<br>🟪, ⬛<br>🟧, ⬛ | `Scan(•)`<br>`Scan(•)`<br>`Scan(•)` | 🟩, 🟩<br>🟪, 🟦 (=🟩•🟪)<br>🟧, 🟥 (=🟩•🟪•🟧) |
