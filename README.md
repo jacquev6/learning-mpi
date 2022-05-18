@@ -284,3 +284,11 @@ Complex reduce
 
 Goals:
 - experiment with user-defined types and operations
+
+Overlaps with `scatterv`
+------------------------
+
+[Source code](scatterv-overlap)
+
+Goals:
+- send overlapping data to several processors
