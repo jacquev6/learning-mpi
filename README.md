@@ -292,3 +292,33 @@ Overlaps with `scatterv`
 
 Goals:
 - send overlapping data to several processors
+
+OpenMP multi-threading
+----------------------
+
+[Source code](openmp)
+
+Goals:
+- show how to use more than 2 OpenMP threads within an MPI program (spoiler: use `mpirun --bind-to none`)
+
+By default, without the `--bind-to none` option, each MPI processor is bound to a single CPU core, and can reach only 200% CPU usage when hyperthreading is activated. One gets times like:
+
+- 1 MPI processors with 1 OpenMP threads: 21s
+- 1 MPI processors with 2 OpenMP threads: 14s
+- 1 MPI processors with 4 OpenMP threads: 15s
+- 2 MPI processors with 1 OpenMP threads: 11s
+- 2 MPI processors with 2 OpenMP threads: 7s
+- 2 MPI processors with 4 OpenMP threads: 8s
+
+(Notice how duration with 4 threads is not smaller than duration with 2 threads.)
+
+With the `--bind-to none` option, MPI processors are free to use multiple cores and one gets times like:
+
+- 1 MPI processors with 1 OpenMP threads: 21s
+- 1 MPI processors with 2 OpenMP threads: 11s
+- 1 MPI processors with 4 OpenMP threads: 5s
+- 2 MPI processors with 1 OpenMP threads: 11s
+- 2 MPI processors with 2 OpenMP threads: 5s
+- 2 MPI processors with 4 OpenMP threads: 3s
+
+(And duration with 4 threads is roughly half the duration with 2 threads, as expected.)
